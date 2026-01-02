@@ -9,6 +9,7 @@
 <ul id="users"></ul>
 
 <script>
+const usersList = document.getElementById("users");
 const token = sessionStorage.getItem("token");
 if (!token) location.href = "/login";
 
