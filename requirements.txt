@@ -5,3 +5,4 @@ sqlalchemy
 python-jose
 passlib
 jinja2
+psycopg2-binary
