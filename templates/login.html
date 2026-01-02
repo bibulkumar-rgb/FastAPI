@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Login</h2>
+
+<form id="loginForm">
+  <input id="email" type="email" placeholder="Email" required><br><br>
+  <input id="password" type="password" placeholder="Password" required><br><br>
+  <button>Login</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  document.getElementById("msg").innerText = "Logging in...";
+
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({
+      email: email.value,
+      password: password.value
+    })
+  });
+
+  if (!res.ok) {
+    msg.innerText = "Invalid login";
+    return;
+  }
+
+  const data = await res.json();
+  sessionStorage.setItem("token", data.access_token);
+  sessionStorage.setItem("username", data.username);
+  window.location.href = "/dashboard";
+});
+</script>
+
+</body>
+</html>

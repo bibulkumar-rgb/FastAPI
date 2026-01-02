@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Dashboard</h2>
+<button onclick="logout()">Logout</button>
+
+<h3>All Users</h3>
+<ul id="users"></ul>
+
+<script>
+const token = sessionStorage.getItem("token");
+if (!token) location.href = "/login";
+
+async function loadUsers() {
+  const res = await fetch("/api/dashboard/users", {
+    headers: { Authorization: "Bearer " + token }
+  });
+
+  if (res.status === 401) {
+    sessionStorage.clear();
+    location.href = "/login";
+    return;
+  }
+
+  const users = await res.json();
+  users.forEach(u => {
+    usersList.innerHTML += `<li>${u.username} (${u.email})</li>`;
+  });
+}
+
+function logout() {
+  sessionStorage.clear();
+  location.href = "/login";
+}
+
+loadUsers();
+</script>
+
+</body>
+</html>
