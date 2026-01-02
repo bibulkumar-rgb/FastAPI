@@ -1,5 +1,0 @@
-fastapi
-uvicorn
-python-jose
-passlib[bcrypt]
-sqlalchemy
