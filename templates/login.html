@@ -1,28 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <body>
+
+<h2>Register</h2>
+
+<form id="registerForm">
+  <input id="username" type="text" placeholder="Username" required><br><br>
+  <input id="reg_email" type="email" placeholder="Email" required><br><br>
+  <input id="reg_password" type="password" placeholder="Password" required><br><br>
+  <button type="submit">Register</button>
+</form>
+
+<p id="registerMsg"></p>
+
+<hr>
 
 <h2>Login</h2>
 
 <form id="loginForm">
   <input id="email" type="email" placeholder="Email" required><br><br>
   <input id="password" type="password" placeholder="Password" required><br><br>
-  <button>Login</button>
+  <button type="submit">Login</button>
 </form>
 
 <p id="msg"></p>
 
 <script>
-document.getElementById("loginForm").addEventListener("submit", async e => {
+/* ================= REGISTER ================= */
+const registerForm = document.getElementById("registerForm");
+const usernameInput = document.getElementById("username");
+const regEmailInput = document.getElementById("reg_email");
+const regPasswordInput = document.getElementById("reg_password");
+const registerMsg = document.getElementById("registerMsg");
+
+registerForm.addEventListener("submit", async e => {
   e.preventDefault();
-  document.getElementById("msg").innerText = "Logging in...";
+  registerMsg.innerText = "Registering...";
+
+  if (regPasswordInput.value.length < 6) {
+    registerMsg.innerText = "Password must be at least 6 characters";
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: usernameInput.value,
+        email: regEmailInput.value,
+        password: regPasswordInput.value
+      })
+    });
+
+    if (!res.ok) {
+      registerMsg.innerText = "Registration failed";
+      return;
+    }
+
+    registerMsg.innerText = "Registration successful. You can now log in.";
+    document.getElementById("email").value = regEmailInput.value;
+    registerForm.reset();
+
+  } catch (err) {
+    registerMsg.innerText = "Server error. Try again.";
+  }
+});
+
+
+/* ================= LOGIN (LOGIC UNCHANGED) ================= */
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const msg = document.getElementById("msg");
+
+loginForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  msg.innerText = "Logging in...";
 
   const res = await fetch("/api/login", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      email: email.value,
-      password: password.value
+      email: emailInput.value,
+      password: passwordInput.value
     })
   });
 
